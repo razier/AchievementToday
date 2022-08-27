@@ -7,13 +7,22 @@ function App() {
 	const date = new Date();
 	const dateFormatter = Intl.DateTimeFormat('sv-SE');
 
+	const [dates, setDates] = useState([]);
 	const [selecteddate, setSelecteddate] = useState(dateFormatter.format(date));
-	const [Achievement, setAchievement] = useState("");
+	const [achievement, setAchievement] = useState("");
 	const [showqr, setShowqr] = useState(false);
 	const [message, setMessage] = useState("Changes are automatically saved on your browser");
 
 	const updateAchievement = (event) => {
 		setAchievement(event.target.value);
+	}
+
+	const dateIsValid = (dateVal) => {
+		if(!isNaN(new Date(dateVal))){
+			return true;
+		}else{
+			return false;
+		}
 	}
 
 	useEffect(()=>{
@@ -24,6 +33,12 @@ function App() {
 			setAchievement(localStorage.getItem(selecteddate));
 		}
 
+		var dateList = {...localStorage};
+		var dateKeys = Object.keys(dateList);
+		dateKeys.push(dateFormatter.format(date));
+		dateKeys = dateKeys.filter(dateIsValid);
+		dateKeys.reverse();
+		setDates([...new Set(dateKeys)]);
 	},[]);
 
 	useEffect(()=>{
@@ -33,10 +48,10 @@ function App() {
 	},[selecteddate]);
 
 	useEffect(()=>{
-		if(Achievement!==""){
-			localStorage.setItem(selecteddate, Achievement.trim());
+		if(achievement!==""){
+			localStorage.setItem(selecteddate, achievement.trim());
 		}
-	},[Achievement]);
+	},[achievement]);
 
 	const copyToClipboard = (event) => {
 		navigator.clipboard.writeText(event.target.value);
@@ -52,7 +67,12 @@ function App() {
 			<div className="container mx-auto md:py-10 sm:p-0 h-full">
 				<div className="bg-white shadow overflow-hidden sm:rounded-lg flex flex-col h-full">
 					<div className="px-4 py-5 sm:px-6 flex-none">
-						<h3 className="text-lg leading-6 font-medium text-gray-900">Achievement {selecteddate===dateFormatter.format(date) ? 'Today' : {selecteddate} }</h3>
+						<h3 className="text-lg leading-6 font-medium text-gray-900">
+							Achievement&nbsp;
+							<select className="m-0 p-0" onChange={(e)=>{setSelecteddate(e.target.value)}}>
+								{dates.map((dateVal)=>{return <option value={dateVal} key={dateVal}>{dateVal===dateFormatter.format(date)?'Today':dateVal+''}</option>})}
+							</select>
+						</h3>
 						<p className="mt-1 max-w-2xl text-sm text-gray-500">Reaffirmation that you did well</p>
 					</div>
 
@@ -61,10 +81,10 @@ function App() {
 							<div className="flex-auto h-full" id="section-input">
 								{showqr ? 
 									<div className="px-4 py-5 sm:px-6 text-center">
-										{Achievement.length>0 ?
+										{achievement.length>0 ?
 											<div>
-												<QRCode className="mx-auto mb-5" size={300} value={window.location.origin+'/?data='+window.btoa(Achievement)} />
-												<input className="text-gray-400 w-full text-center" value={window.location.origin+'/?data='+window.btoa(Achievement)} onClick={copyToClipboard} readOnly />
+												<QRCode className="mx-auto mb-5" size={300} value={window.location.origin+'/?data='+window.btoa(achievement)} />
+												<input className="text-gray-400 w-full text-center" value={window.location.origin+'/?data='+window.btoa(achievement)} onClick={copyToClipboard} readOnly />
 											</div>
 										:
 											<div>
@@ -74,7 +94,7 @@ function App() {
 										}
 									</div>
 									:
-									<textarea autoFocus className="px-4 py-5 sm:px-6 w-full h-full focus:outline-none caret-orange-400 text-gray-500 text-lg md:text-base resize-none" spellCheck="false" value={Achievement} onChange={updateAchievement} ></textarea>
+									<textarea autoFocus className="px-4 py-5 sm:px-6 w-full h-full focus:outline-none caret-orange-400 text-gray-500 text-lg md:text-base resize-none" spellCheck="false" value={achievement} onChange={updateAchievement} ></textarea>
 								}
 							</div>
 						</div>
