@@ -96,7 +96,7 @@ function App() {
 
 					<div className="px-4 py-5 bg-gray-50 text-right sm:px-6 flex-none">
 						<div className="flex">
-							<button onClick={()=>{localStorage.setItem(selecteddate, achievement.trim());setMessage("Changes has been saved");setTimeout(()=>{setMessage("")}, 2000);}} class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-1 px-3 rounded">Save</button>
+							<button onClick={()=>{localStorage.setItem(selecteddate, achievement.trim());setMessage("Changes has been saved");setTimeout(()=>{setMessage("")}, 2000);}} className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-1 px-3 rounded">Save</button>
 							<span className="flex-auto text-left text-gray-400 py-1 px-3">{message}</span>
 							<button className='flex-none' onClick={()=>{ setShowqr(!showqr) }} title={!showqr ? 'Show Transfer QR' : 'Show Achievement'} >{!showqr ? <AiOutlineQrcode /> : <AiOutlineFileText /> }</button>
 						</div>
