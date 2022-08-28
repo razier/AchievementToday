@@ -11,7 +11,7 @@ function App() {
 	const [selecteddate, setSelecteddate] = useState(dateFormatter.format(date));
 	const [achievement, setAchievement] = useState("");
 	const [showqr, setShowqr] = useState(false);
-	const [message, setMessage] = useState("Changes are automatically saved on your browser");
+	const [message, setMessage] = useState("");
 
 	const updateAchievement = (event) => {
 		setAchievement(event.target.value);
@@ -47,12 +47,6 @@ function App() {
 		}
 	},[selecteddate]);
 
-	useEffect(()=>{
-		if(achievement!==""){
-			localStorage.setItem(selecteddate, achievement.trim());
-		}
-	},[achievement]);
-
 	const copyToClipboard = (event) => {
 		navigator.clipboard.writeText(event.target.value);
 		var oldMessage = message;
@@ -69,7 +63,7 @@ function App() {
 					<div className="px-4 py-5 sm:px-6 flex-none">
 						<h3 className="text-lg leading-6 font-medium text-gray-900">
 							Achievement&nbsp;
-							<select className="m-0 p-0" onChange={(e)=>{setSelecteddate(e.target.value)}}>
+							<select className="m-0 p-0" onChange={(e)=>{setAchievement("");setSelecteddate(e.target.value)}}>
 								{dates.map((dateVal)=>{return <option value={dateVal} key={dateVal}>{dateVal===dateFormatter.format(date)?'Today':dateVal+''}</option>})}
 							</select>
 						</h3>
@@ -102,7 +96,8 @@ function App() {
 
 					<div className="px-4 py-5 bg-gray-50 text-right sm:px-6 flex-none">
 						<div className="flex">
-							<small className="flex-auto text-left text-gray-400">{message}</small>
+							<button onClick={()=>{localStorage.setItem(selecteddate, achievement.trim());setMessage("Changes has been saved");setTimeout(()=>{setMessage("")}, 2000);}} class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-1 px-3 rounded">Save</button>
+							<span className="flex-auto text-left text-gray-400 py-1 px-3">{message}</span>
 							<button className='flex-none' onClick={()=>{ setShowqr(!showqr) }} title={!showqr ? 'Show Transfer QR' : 'Show Achievement'} >{!showqr ? <AiOutlineQrcode /> : <AiOutlineFileText /> }</button>
 						</div>
 					</div>
