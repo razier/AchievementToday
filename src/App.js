@@ -37,7 +37,7 @@ function App() {
 		var dateKeys = Object.keys(dateList);
 		dateKeys.push(dateFormatter.format(date));
 		dateKeys = dateKeys.filter(dateIsValid);
-		dateKeys.reverse();
+		dateKeys.sort().reverse();
 		setDates([...new Set(dateKeys)]);
 	},[]);
 
